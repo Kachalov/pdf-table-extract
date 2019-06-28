@@ -86,7 +86,7 @@ def process_page(
 
     outfile = open(outfilename, 'w') if outfilename else sys.stdout
     page = page or []
-    (pg, frow, lrow) = (map(int, (pgs.split(":")))+[None, None])[0:3]
+    (pg, frow, lrow) = (list(map(int, (pgs.split(":"))))+[None, None])[0:3]
     # check that pdftoppdm exists by running a simple command
     check_for_required_executable("pdftoppm", ["pdftoppm", "-h"])
     # end check
@@ -340,7 +340,8 @@ def process_page(
 
     whitespace = re.compile(r'\s+')
 
-    def getCell((i, j, u, v)):
+    def getCell(par1):
+        (i, j, u, v) = par1
         (l, r, t, b) = (
             vd[2 * i + 1],
             vd[2 * (i + u)],
@@ -366,7 +367,7 @@ def process_page(
             shell=True
         )
 
-        ret = p.communicate()[0]
+        ret = p.communicate()[0].decode('utf-8')
         if whitespace != 'raw':
             ret = whitespace.sub("" if whitespace == "none" else " ", ret)
             if len(ret) > 0:
@@ -468,7 +469,7 @@ def o_cells_xml(
         root.setAttribute("name", name)
     for cl in cells:
         x = doc.createElement("cell")
-        map(lambda(a): x.setAttribute(*a), zip("xywhp", map(str, cl)))
+        map(lambda a: x.setAttribute(*a), zip("xywhp", map(str, cl)))
         if cl[5] != "":
             x.appendChild(doc.createTextNode(cl[5]))
         root.appendChild(x)

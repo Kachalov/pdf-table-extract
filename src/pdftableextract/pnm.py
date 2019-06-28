@@ -11,7 +11,7 @@ def noncomment(fd):
     Comments start with #"""
     while True:
         x = fd.readline()
-        if x.startswith('#'):
+        if x.decode('utf-8').startswith('#'):
             continue
         else:
             return x
@@ -21,7 +21,7 @@ def readPNM(fd):
     """Reads the PNM file from the filehandle"""
     t = noncomment(fd)
     s = noncomment(fd)
-    m = noncomment(fd) if not (t.startswith('P1') or t.startswith('P4')) else '1'
+    m = noncomment(fd) if not (t.decode('utf-8').startswith('P1') or t.decode('utf-8').startswith('P4')) else '1'
     data = fd.read()
     ls = len(s.split())
     if ls != 2:
@@ -40,7 +40,7 @@ def readPNM(fd):
     m = int(m)
 
     if m != 255:
-        print "Just want 8 bit pgms for now!"
+        print("Just want 8 bit pgms for now!")
 
     d = fromstring(data, dtype=uint8)
     d = reshape(d, (height, width))
